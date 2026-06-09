@@ -1,30 +1,35 @@
-import { useState } from "react";
+import { useState, type ChangeEvent, type JSX } from "react";
+import type { CodingProblem, FilterOption } from "../types/types";
+import List from "../components/List";
+import Modal from "../components/Modal";
+import ProblemBlock from "../components/ProblemBlock";
+import CodingBlock from "../components/CodingBlock";
 
-const problemCategories = [
-  { name: "Arrays", id: 1, color: "#FF6B6B" }, // Red
-  { name: "Hash Maps", id: 2, color: "#4ECDC4" }, // Teal
-  { name: "Linked Lists", id: 3, color: "#FFD93D" }, // Yellow
-  { name: "Trees", id: 4, color: "#A78BFA" }, // Purple
-  { name: "Graphs", id: 5, color: "#34D399" }, // Green
+const problemCategories: FilterOption[] = [
+  { id: 1, name: "Arrays", color: "#FF6B6B" },
+  { id: 2, name: "Hash Maps", color: "#4ECDC4" },
+  { id: 3, name: "Linked Lists", color: "#FFD93D" },
+  { id: 4, name: "Trees", color: "#A78BFA" },
+  { id: 5, name: "Graphs", color: "#34D399" },
 ];
 
-const problemDifficulties = [
-  { name: "Easy", id: 1, color: "#06B6D4" }, // Cyan
-  { name: "Medium", id: 2, color: "#F97316" }, // Orange
-  { name: "Hard", id: 3, color: "#EC4899" }, // Pink
+const problemDifficulties: FilterOption[] = [
+  { id: 1, name: "Easy", color: "#06B6D4" },
+  { id: 2, name: "Medium", color: "#F97316" },
+  { id: 3, name: "Hard", color: "#EC4899" },
 ];
 
 function App() {
-  const [problemCategory, setProblemCategory] = useState("Arrays");
-  const [problemDifficulty, setProblemDifficulty] = useState("Easy");
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-  const [apiKey, setApiKey] = useState(() => {
+  const [problemCategory, setProblemCategory] = useState<string>("Arrays");
+  const [problemDifficulty, setProblemDifficulty] = useState<string>("Easy");
+  const [showApiKeyModal, setShowApiKeyModal] = useState<boolean>(false);
+  const [apiKey, setApiKey] = useState<string>(() => {
     return sessionStorage.getItem("apiKey") || "";
   });
-  const [codingProblem, setCodingProblem] = useState({
+  const [codingProblem, setCodingProblem] = useState<CodingProblem>({
     isSet: true,
     description:
-      "Given an array of integers, return the indecis of the two numbers that add up to a target sum.",
+      "Given an array of integers, return the indices of the two numbers that add up to a target sum.",
     examples: [
       {
         input: "nums = [2, 7, 11, 15], target = 9",
@@ -53,15 +58,15 @@ function App() {
     ],
   });
 
-  const handleProblemCategoryChange = (category) => {
+  const handleProblemCategoryChange = (category: string): void => {
     setProblemCategory(category);
   };
 
-  const handleProblemDifficultyChange = (difficulty) => {
+  const handleProblemDifficultyChange = (difficulty: string): void => {
     setProblemDifficulty(difficulty);
   };
 
-  const handleApiKeyChange = (e) => {
+  const handleApiKeyChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const key = e.target.value;
     setApiKey(key);
     sessionStorage.setItem("apiKey", key);
@@ -138,83 +143,6 @@ function App() {
         </div>
       )}
     </div>
-  );
-}
-
-function CodingBlock() {
-  return (
-    <div className="coding-block">
-      <label className="coding-block-label">Your Solution</label>
-      <textarea placeholder="Write your code here..." />
-      <button className="run-tests-btn">Run Tests</button>
-    </div>
-  );
-}
-
-function ProblemBlock({ problem }) {
-  return (
-    <div className="problem">
-      <h2>{problem.description}</h2>
-      <div className="problem-examples">
-        {problem.examples.map((item, idx) => {
-          return (
-            <div className="problem-example" key={idx}>
-              <div className="problem-example-label">Example {idx + 1}</div>
-              <div className="problem-example-label">Input:</div>
-              <div className="problem-example-content">{item.input}</div>
-              <div className="problem-example-label">Output:</div>
-              <div className="problem-example-content">{item.output}</div>
-              <div className="problem-example-explanation">
-                {item.explanation}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function Modal({ onClose, children }) {
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {children}
-        <button className="modal-close" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function List({ list, onChange }) {
-  const handleClick = (item) => {
-    onChange(item.name);
-  };
-
-  return (
-    <>
-      <ul className="list">
-        {list.map((item) => {
-          return (
-            <Item item={item} key={item.id} onClick={() => handleClick(item)} />
-          );
-        })}
-      </ul>
-    </>
-  );
-}
-
-function Item({ item, onClick }) {
-  return (
-    <button
-      className="item-btn"
-      style={{ backgroundColor: item.color }}
-      onClick={onClick}
-    >
-      {item.name}
-    </button>
   );
 }
 
