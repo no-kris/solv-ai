@@ -1,9 +1,10 @@
 import { useState, type ChangeEvent } from "react";
-import type { CodingProblem, FilterOption } from "../types/types";
+import type { FilterOption } from "../types/types";
 import List from "../components/List";
 import Modal from "../components/Modal";
 import ProblemBlock from "../components/ProblemBlock";
 import CodingBlock from "../components/CodingBlock";
+import { useProblem } from "../hooks/useProblem";
 
 const problemCategories: FilterOption[] = [
   { id: 1, name: "Arrays", color: "#FF6B6B" },
@@ -26,38 +27,7 @@ function App() {
   const [apiKey, setApiKey] = useState<string>(() => {
     return sessionStorage.getItem("apiKey") || "";
   });
-  const [codingProblem, setCodingProblem] = useState<CodingProblem>({
-    isSet: true,
-    description:
-      "Given an array of integers, return the indices of the two numbers that add up to a target sum.",
-    paramNames: ["nums", "target"],
-    examples: [
-      {
-        input: "nums = [2, 7, 11, 15], target = 9",
-        output: "[0, 1]",
-        explanation: "nums[0] + nums[1] == 9, so we return [0, 1].",
-      },
-      {
-        input: "nums = [3, 2, 4], target = 6",
-        output: "[1, 2]",
-        explanation: "nums[1] + nums[2] == 6, so we return [1, 2].",
-      },
-    ],
-    tests: [
-      {
-        params: { nums: [2, 7, 11, 15], target: 9 },
-        expectedOutput: "[0, 1]",
-      },
-      {
-        params: { nums: [3, 2, 4], target: 6 },
-        expectedOutput: "[1, 2]",
-      },
-      {
-        params: { nums: [3, 3], target: 6 },
-        expectedOutput: "[0, 1]",
-      },
-    ],
-  });
+  const { state: problemState, dispatch } = useProblem();
 
   const handleProblemCategoryChange = (category: string): void => {
     setProblemCategory(category);
@@ -76,6 +46,7 @@ function App() {
   return (
     <div className="center-container">
       <h1 className="main-title">Solv.AI</h1>
+
       <span className="api-key">
         <button
           className="qstn-btn"
@@ -116,6 +87,7 @@ function App() {
           onChange={handleApiKeyChange}
         />
       </span>
+
       <div className="filters">
         <List list={problemCategories} onChange={handleProblemCategoryChange} />
         <List
@@ -123,6 +95,7 @@ function App() {
           onChange={handleProblemDifficultyChange}
         />
       </div>
+
       <p className="info">
         Generating problem using ...
         <span className="filter-category-label">{problemCategory}</span>... with
@@ -137,10 +110,14 @@ function App() {
         </button>
       </p>
 
-      {codingProblem.isSet && (
+      {problemState.hasError && (
+        <div className="error-message">{problemState.errorMessage}</div>
+      )}
+
+      {problemState.problem.isSet && (
         <div className="problem-code-display">
-          <ProblemBlock problem={codingProblem} />
-          <CodingBlock paramNames={codingProblem.paramNames} />
+          <ProblemBlock problem={problemState.problem} />
+          <CodingBlock paramNames={problemState.problem.paramNames} />
         </div>
       )}
     </div>

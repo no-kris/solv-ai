@@ -7,6 +7,8 @@ solv-ai/
 │   │   ├── types/        # Shared Typescript interfaces
 │   │   ├── services/     # API calls to backend
 │   │   ├── styles/       # CSS styles
+│   │   ├── hooks/        # Custom react hooks
+│   │   ├── tests/        # vitest
 │   │   └── main.tsx
 │   ├── .gitignore
 │   ├── package.json

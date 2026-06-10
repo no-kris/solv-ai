@@ -65,3 +65,13 @@ export interface ModalProps {
   onClose: () => void;
   children: React.ReactNode;
 }
+
+/**
+ * Interface for problem state.
+ */
+export type ProblemState = {
+  problem: CodingProblem;
+  loading: boolean;
+  hasError: boolean;
+  errorMessage: string;
+};
