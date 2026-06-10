@@ -1,3 +1,6 @@
+import type { Dispatch } from "react";
+import type { ProblemAction } from "../hooks/useProblem";
+
 /**
  * Represents a problem category or difficulty option
  */
@@ -75,3 +78,11 @@ export type ProblemState = {
   hasError: boolean;
   errorMessage: string;
 };
+
+/**
+ * Interface for generate problem handler.
+ */
+export interface GenerateProblemProps {
+  dispatch: Dispatch<ProblemAction>;
+  problemMetadata: Record<string, string>;
+}

@@ -1,10 +1,10 @@
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 import type { FilterOption } from "../types/types";
 import List from "../components/List";
-import Modal from "../components/Modal";
 import ProblemBlock from "../components/ProblemBlock";
 import CodingBlock from "../components/CodingBlock";
 import { useProblem } from "../hooks/useProblem";
+import { handleGenerateProblem } from "../services/handleGenerateProblem";
 
 const problemCategories: FilterOption[] = [
   { id: 1, name: "Arrays", color: "#FF6B6B" },
@@ -23,12 +23,17 @@ const problemDifficulties: FilterOption[] = [
 function App() {
   const [problemCategory, setProblemCategory] = useState<string>("Arrays");
   const [problemDifficulty, setProblemDifficulty] = useState<string>("Easy");
-  const [showApiKeyModal, setShowApiKeyModal] = useState<boolean>(false);
-  const [apiKey, setApiKey] = useState<string>(() => {
-    return sessionStorage.getItem("apiKey") || "";
-  });
   const { state: problemState, dispatch } = useProblem();
 
+  const handleGenerateProblemClick = () => {
+    handleGenerateProblem({
+      dispatch,
+      problemMetadata: {
+        problemCategory,
+        problemDifficulty,
+      },
+    });
+  };
   const handleProblemCategoryChange = (category: string): void => {
     setProblemCategory(category);
   };
@@ -37,56 +42,9 @@ function App() {
     setProblemDifficulty(difficulty);
   };
 
-  const handleApiKeyChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const key = e.target.value;
-    setApiKey(key);
-    sessionStorage.setItem("apiKey", key);
-  };
-
   return (
     <div className="center-container">
       <h1 className="main-title">Solv.AI</h1>
-
-      <span className="api-key">
-        <button
-          className="qstn-btn"
-          onClick={() => setShowApiKeyModal(!showApiKeyModal)}
-        >
-          ?
-        </button>
-        {showApiKeyModal && (
-          <Modal onClose={() => setShowApiKeyModal(false)}>
-            <h2>Why Do You Need an API Key?</h2>
-            <br />
-            <p>
-              This app uses large language models to generate coding problems
-              dynamically. To generate problems, we need to call the LLM API,
-              which requires your API key.
-            </p>
-            <br />
-            <p>
-              By providing your own API key, you maintain full control over your
-              usage and costs. <strong>Your API key is never stored</strong>
-              —it's only used to make the API call and then discarded when you
-              leave the app.
-            </p>
-            <br />
-            <p>
-              <em>
-                Note: You will have to re-enter the API key each time you visit
-                the app.
-              </em>
-            </p>
-          </Modal>
-        )}
-        API Key:
-        <input
-          type="text"
-          placeholder="Paste API Key here..."
-          value={apiKey}
-          onChange={handleApiKeyChange}
-        />
-      </span>
 
       <div className="filters">
         <List list={problemCategories} onChange={handleProblemCategoryChange} />
@@ -104,14 +62,14 @@ function App() {
         <button
           type="submit"
           className="item-btn generate-btn"
-          disabled={!apiKey}
+          onClick={handleGenerateProblemClick}
         >
-          Generate
+          {problemState.loading ? "Generating..." : "Generate"}
         </button>
       </p>
 
       {problemState.hasError && (
-        <div className="error-message">{problemState.errorMessage}</div>
+        <div className="problem-error-message">{problemState.errorMessage}</div>
       )}
 
       {problemState.problem.isSet && (

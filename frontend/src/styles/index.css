@@ -10,6 +10,7 @@
   --color-bg-tertiary: #fafafa;
   --color-bg-white: #fff;
   --color-border: #e5e7eb;
+  --color-error: #c62828;
   --color-overlay: rgba(0, 0, 0, 0.5);
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-shadow-dark: rgba(0, 0, 0, 0.2);
@@ -133,22 +134,6 @@ body {
   font-family: var(--font-family-display);
 }
 
-.api-key {
-  font-size: var(--font-size-xl);
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.api-key input {
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-xs);
-  text-decoration: underline;
-  text-underline-offset: var(--spacing-xs);
-  -webkit-text-security: disc;
-}
-
 .filters {
   display: flex;
   justify-content: space-between;
@@ -180,14 +165,6 @@ body {
 .list {
   display: flex;
   gap: var(--spacing-xl);
-}
-
-.qstn-btn {
-  font-size: var(--font-size-lg);
-  background-color: var(--color-primary-light);
-  padding: 0.1rem 0.6rem;
-  border-radius: var(--radius-full);
-  outline: var(--border-width) solid var(--color-primary);
 }
 
 .generate-btn {
@@ -231,37 +208,6 @@ body {
     0 0 0 4px var(--color-shadow-focus);
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--color-overlay);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background-color: var(--color-bg);
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
-  max-width: 500px;
-  text-align: center;
-}
-
-.modal-close {
-  margin-top: var(--spacing-md);
-  padding: var(--spacing-xs) var(--spacing-md);
-  background-color: var(--color-primary);
-  color: var(--color-bg-white);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-}
-
 .problem-code-display {
   display: flex;
   gap: var(--spacing-xl);
@@ -273,6 +219,11 @@ body {
 .problem-code-display > * {
   flex: 1;
   min-width: 0;
+}
+
+.problem-error-message {
+  font-size: var(--font-size-3xl);
+  color: var(--color-error);
 }
 
 /* Problem Block Styles */
