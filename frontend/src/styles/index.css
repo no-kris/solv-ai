@@ -346,6 +346,11 @@ body {
   box-shadow: var(--shadow-md);
 }
 
+.monaco-editor {
+  flex: 1;
+  border-radius: var(--radius-md);
+}
+
 .coding-block-label {
   font-size: var(--font-size-md);
   font-weight: bold;

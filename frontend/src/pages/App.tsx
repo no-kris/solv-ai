@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent, type JSX } from "react";
+import { useState, type ChangeEvent } from "react";
 import type { CodingProblem, FilterOption } from "../types/types";
 import List from "../components/List";
 import Modal from "../components/Modal";
@@ -30,6 +30,7 @@ function App() {
     isSet: true,
     description:
       "Given an array of integers, return the indices of the two numbers that add up to a target sum.",
+    paramNames: ["nums", "target"],
     examples: [
       {
         input: "nums = [2, 7, 11, 15], target = 9",
@@ -44,15 +45,15 @@ function App() {
     ],
     tests: [
       {
-        input: "[2, 7, 11, 15]",
+        params: { nums: [2, 7, 11, 15], target: 9 },
         expectedOutput: "[0, 1]",
       },
       {
-        input: "[3, 2, 4]",
+        params: { nums: [3, 2, 4], target: 6 },
         expectedOutput: "[1, 2]",
       },
       {
-        input: "[3, 3]",
+        params: { nums: [3, 3], target: 6 },
         expectedOutput: "[0, 1]",
       },
     ],
@@ -139,7 +140,7 @@ function App() {
       {codingProblem.isSet && (
         <div className="problem-code-display">
           <ProblemBlock problem={codingProblem} />
-          <CodingBlock />
+          <CodingBlock paramNames={codingProblem.paramNames} />
         </div>
       )}
     </div>

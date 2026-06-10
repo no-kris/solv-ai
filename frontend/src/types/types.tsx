@@ -20,8 +20,8 @@ export interface ProblemExample {
  * Represents a test case for a coding problem
  */
 export interface TestCase {
-  input: string;
-  expectedOutput: string;
+  params: Record<string, unknown>;
+  expectedOutput: string | number | boolean | unknown;
 }
 
 /**
@@ -30,6 +30,7 @@ export interface TestCase {
 export interface CodingProblem {
   isSet: boolean;
   description: string;
+  paramNames: string[];
   examples: ProblemExample[];
   tests: TestCase[];
 }
