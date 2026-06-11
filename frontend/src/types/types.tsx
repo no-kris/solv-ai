@@ -73,7 +73,7 @@ export interface ModalProps {
  * Interface for problem state.
  */
 export type ProblemState = {
-  problem: CodingProblem;
+  content: CodingProblem;
   loading: boolean;
   hasError: boolean;
   errorMessage: string;

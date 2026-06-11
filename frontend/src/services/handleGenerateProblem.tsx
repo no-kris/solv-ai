@@ -4,10 +4,11 @@ export const handleGenerateProblem = async ({
   dispatch,
   problemMetadata,
 }: GenerateProblemProps) => {
+  dispatch({ type: "RESET" });
   dispatch({ type: "LOADING" });
 
   try {
-    const response = await fetch("/api/generate-problem", {
+    const response = await fetch("http://127.0.0.1:8000/api/generate-problem", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -23,7 +24,7 @@ export const handleGenerateProblem = async ({
       return;
     }
 
-    dispatch({ type: "SUCCESS", payload: data.problem });
+    dispatch({ type: "SUCCESS", payload: data.content });
   } catch {
     dispatch({
       type: "ERROR",

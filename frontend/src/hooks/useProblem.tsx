@@ -16,7 +16,7 @@ const initialProblem: CodingProblem = {
 };
 
 const initialState: ProblemState = {
-  problem: initialProblem,
+  content: initialProblem,
   loading: false,
   hasError: false,
   errorMessage: "",
@@ -31,7 +31,7 @@ export const problemReducer = (
       return { ...state, loading: true, hasError: false, errorMessage: "" };
     case "SUCCESS":
       return {
-        problem: action.payload,
+        content: action.payload,
         loading: false,
         hasError: false,
         errorMessage: "",

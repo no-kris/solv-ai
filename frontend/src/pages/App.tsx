@@ -72,10 +72,10 @@ function App() {
         <div className="problem-error-message">{problemState.errorMessage}</div>
       )}
 
-      {problemState.problem.isSet && (
+      {problemState.content.isSet && (
         <div className="problem-code-display">
-          <ProblemBlock problem={problemState.problem} />
-          <CodingBlock paramNames={problemState.problem.paramNames} />
+          <ProblemBlock problem={problemState.content} />
+          <CodingBlock paramNames={problemState.content.paramNames} />
         </div>
       )}
     </div>

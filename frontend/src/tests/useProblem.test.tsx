@@ -24,7 +24,7 @@ const mockProblem = {
 };
 
 const initialState: ProblemState = {
-  problem: {
+  content: {
     isSet: false,
     description: "",
     paramNames: [],
@@ -53,7 +53,7 @@ describe("problemReducer", () => {
     };
     const newState = problemReducer(initialState, action);
 
-    expect(newState.problem).toEqual(mockProblem);
+    expect(newState.content).toEqual(mockProblem);
     expect(newState.loading).toBe(false);
     expect(newState.hasError).toBe(false);
     expect(newState.errorMessage).toBe("");
@@ -74,7 +74,7 @@ describe("problemReducer", () => {
 
   it("should handle RESET action", () => {
     const loadedState: ProblemState = {
-      problem: mockProblem,
+      content: mockProblem,
       loading: false,
       hasError: false,
       errorMessage: "",
@@ -88,7 +88,7 @@ describe("problemReducer", () => {
 
   it("should preserve problem on ERROR action", () => {
     const stateWithProblem: ProblemState = {
-      problem: mockProblem,
+      content: mockProblem,
       loading: false,
       hasError: false,
       errorMessage: "",
@@ -100,7 +100,7 @@ describe("problemReducer", () => {
     };
     const newState = problemReducer(stateWithProblem, action);
 
-    expect(newState.problem).toEqual(mockProblem);
+    expect(newState.content).toEqual(mockProblem);
     expect(newState.hasError).toBe(true);
   });
 });
