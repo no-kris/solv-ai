@@ -20,15 +20,15 @@ export const handleGenerateProblem = async ({
     const data = await response.json();
 
     if (!data.success) {
-      dispatch({ type: "ERROR", payload: "Failed to generate a problem." });
+      dispatch({ type: "ERROR", payload: data.error });
       return;
     }
 
     dispatch({ type: "SUCCESS", payload: data.content });
-  } catch {
+  } catch (err) {
     dispatch({
       type: "ERROR",
-      payload: "Failed to generate a problem",
+      payload: err,
     });
   }
 };
