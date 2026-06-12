@@ -4,7 +4,7 @@ import random
 
 from pydantic import ValidationError
 
-from prompts.build_prompt import build_prompt
+from prompts.build_prompt import build_prompt, get_node_structure
 from schemas.schemas import CodingProblem, CustomResponse
 from utils.config import config
 
@@ -37,6 +37,7 @@ async def generate_problem(
 
             problem_data = json.loads(content_str)
             problem = CodingProblem(**problem_data)
+            problem.nodeStructure = get_node_structure(category)
 
             return CustomResponse(success=True, content=problem)
 

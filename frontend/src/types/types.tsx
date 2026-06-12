@@ -28,6 +28,12 @@ export interface TestCase {
 }
 
 /**
+ * Represents a node data structure
+ */
+type NodeField = { name: string; default: string };
+export type NodeStructure = { className: string; fields: NodeField[] };
+
+/**
  * Represents a complete coding problem
  */
 export interface CodingProblem {
@@ -36,12 +42,13 @@ export interface CodingProblem {
   paramNames: string[];
   examples: ProblemExample[];
   tests: TestCase[];
+  nodeStructure?: NodeStructure;
 }
 
 /**
  * Props for the ProblemBlock component
  */
-export interface ProblemBlockProps {
+export interface ProblemProps {
   problem: CodingProblem;
 }
 

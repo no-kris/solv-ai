@@ -75,7 +75,7 @@ function App() {
       {problemState.content.isSet && (
         <div className="problem-code-display">
           <ProblemBlock problem={problemState.content} />
-          <CodingBlock paramNames={problemState.content.paramNames} />
+          <CodingBlock problem={problemState.content} />
         </div>
       )}
     </div>

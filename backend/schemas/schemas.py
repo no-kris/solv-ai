@@ -19,12 +19,23 @@ class TestCase(BaseModel):
     expectedOutput: Any
 
 
+class NodeField(BaseModel):
+    name: str
+    default: str
+
+
+class NodeStructure(BaseModel):
+    className: str
+    fields: list[NodeField]
+
+
 class CodingProblem(BaseModel):
     isSet: bool = True
     description: str
     paramNames: list[str]
     examples: list[ProblemExample]
     tests: list[TestCase]
+    nodeStructure: Optional[NodeStructure] = None
 
 
 class CustomResponse(BaseModel):

@@ -1,6 +1,6 @@
-import type { ProblemBlockProps } from "../types/types";
+import type { ProblemProps } from "../types/types";
 
-function ProblemBlock({ problem }: ProblemBlockProps) {
+function ProblemBlock({ problem }: ProblemProps) {
   return (
     <div className="problem">
       <h2>{problem.description}</h2>

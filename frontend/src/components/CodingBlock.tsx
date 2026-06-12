@@ -1,6 +1,20 @@
 import type { JSX } from "react/jsx-runtime";
-import { Editor } from "@monaco-editor/react";
+import CodeMirror from "@uiw/react-codemirror";
+import { python } from "@codemirror/lang-python";
 import { useState } from "react";
+import type { ProblemProps, NodeStructure } from "../types/types";
+
+const buildNodeStructure = (node: NodeStructure): string => {
+  const params = node.fields.map((f) => `${f.name}=${f.default}`).join(", ");
+
+  const body = node.fields
+    .map((f) => `\tself.${f.name} = ${f.name}`)
+    .join("\n");
+
+  return `class ${node.className}:
+  def __init__(self, ${params}):
+${body}`;
+};
 
 const buildSignature = (paramNames: string[]): string => {
   const params = paramNames.join(", ");
@@ -8,24 +22,29 @@ const buildSignature = (paramNames: string[]): string => {
 # DO NOT modify the function signature below
 # ============================================
 def solution(${params}):
-    # Write your code here
-    pass
+  # Write your code here
+  pass
 # ============================================`;
 };
 
-function CodingBlock({ paramNames }: { paramNames: string[] }): JSX.Element {
-  const [code, setCode] = useState<string>(() => buildSignature(paramNames));
+function CodingBlock({ problem }: ProblemProps): JSX.Element {
+  const [code, setCode] = useState<string>(() => {
+    const signature = buildSignature(problem.paramNames);
+    if (problem.nodeStructure) {
+      return buildNodeStructure(problem.nodeStructure) + "\n\n" + signature;
+    }
+    return signature;
+  });
 
   return (
     <div className="coding-block">
       <label className="coding-block-label">Your Solution</label>
-      <Editor
-        height="100%"
-        language="python"
+      <CodeMirror
         value={code}
-        onChange={(value) => setCode(value || "")}
-        theme="light"
-        className="monaco-editor"
+        onChange={setCode}
+        height="100%"
+        extensions={[python()]}
+        className="code-editor"
       />
       <button className="run-tests-btn">Run Tests</button>
     </div>
