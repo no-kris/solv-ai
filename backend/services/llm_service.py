@@ -1,5 +1,6 @@
 import asyncio
 import json
+import random
 
 from pydantic import ValidationError
 
@@ -24,6 +25,9 @@ async def generate_problem(
         Everything else as a fallback
     """
     for attempt in range(max_retries):
+        if attempt > 0:
+            delay = (2**attempt) + random.uniform(0, 0.5)
+            await asyncio.sleep(delay)
         try:
             prompt = build_prompt(category, difficulty)
             response = await config.get_client().chat_completion(
