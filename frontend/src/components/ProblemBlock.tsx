@@ -1,9 +1,12 @@
 import type { ProblemProps } from "../types/types";
+import ReactMarkdown from "react-markdown";
 
 function ProblemBlock({ problem }: ProblemProps) {
   return (
     <div className="problem">
-      <h2>{problem.description}</h2>
+      <h2>
+        <ReactMarkdown>{problem.description}</ReactMarkdown>
+      </h2>
       <div className="problem-examples">
         {problem.examples.map((item, idx) => {
           return (
@@ -14,7 +17,7 @@ function ProblemBlock({ problem }: ProblemProps) {
               <div className="problem-example-label">Output:</div>
               <div className="problem-example-content">{item.output}</div>
               <div className="problem-example-explanation">
-                {item.explanation}
+                <ReactMarkdown>{item.explanation}</ReactMarkdown>
               </div>
             </div>
           );

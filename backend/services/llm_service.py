@@ -4,9 +4,10 @@ import random
 
 from pydantic import ValidationError
 
-from prompts.build_prompt import build_prompt, get_node_structure
-from schemas.schemas import CodingProblem, CustomResponse
+from prompts.build_prompt import build_prompt
+from schemas.schemas import CustomResponse
 from utils.config import config
+from utils.utils import strip_llm_markdown_formatting
 
 
 async def generate_problem(
@@ -15,9 +16,9 @@ async def generate_problem(
     """
     Makes an API request to an LLM with retry logic.
     Returns a CustomResponse object with fields:
-        success
-        error (optional)
-        content (optional)
+        success (boolean)
+        error (string) (optional)
+        content (string) (optional)
     Handles exceptions for:
         JSONDecodeError — LLM didn't return valid JSON
         ValidationError — JSON was valid but didn't match the `CodingProblem` schema
@@ -34,12 +35,9 @@ async def generate_problem(
                 messages=[{"role": "user", "content": prompt}], model=config.get_model()
             )
             content_str = str(response.choices[0].message.content)
+            cleaned_content_str = strip_llm_markdown_formatting(content_str)
 
-            problem_data = json.loads(content_str)
-            problem = CodingProblem(**problem_data)
-            problem.nodeStructure = get_node_structure(category)
-
-            return CustomResponse(success=True, content=problem)
+            return CustomResponse(success=True, content=cleaned_content_str)
 
         except json.JSONDecodeError:
             if attempt == max_retries - 1:
@@ -62,12 +60,12 @@ async def generate_problem(
         except asyncio.TimeoutError:
             return CustomResponse(success=False, error="Request timed out.")
 
-        except Exception as e:
+        except Exception:
             if attempt == max_retries - 1:
                 return CustomResponse(
                     success=False, error="Failed to generate problem."
                 )
-            print(f"Attempt {attempt + 1}: {type(e).__name__}, retrying...")
+            print(f"Attempt {attempt + 1}: failed. Retrying...")
             continue
 
     return CustomResponse(

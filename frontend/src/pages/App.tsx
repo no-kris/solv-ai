@@ -69,7 +69,9 @@ function App() {
       </p>
 
       {problemState.hasError && (
-        <div className="problem-error-message">{problemState.errorMessage}</div>
+        <div className="problem-error-message">
+          {String(problemState.errorMessage)}
+        </div>
       )}
 
       {problemState.content.isSet && (

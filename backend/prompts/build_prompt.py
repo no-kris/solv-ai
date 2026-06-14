@@ -1,37 +1,7 @@
 import json
 
-from schemas.schemas import CodingProblem, NodeField, NodeStructure
-
-
-def get_node_structure(category: str) -> NodeStructure | None:
-    match category:
-        case "Linked Lists":
-            return NodeStructure(
-                className="ListNode",
-                fields=[
-                    NodeField(name="val", default="0"),
-                    NodeField(name="next", default="None"),
-                ],
-            )
-        case "Trees":
-            return NodeStructure(
-                className="TreeNode",
-                fields=[
-                    NodeField(name="val", default="0"),
-                    NodeField(name="left", default="None"),
-                    NodeField(name="right", default="None"),
-                ],
-            )
-        case "Graphs":
-            return NodeStructure(
-                className="GraphNode",
-                fields=[
-                    NodeField(name="val", default="0"),
-                    NodeField(name="neighbors", default="None"),
-                ],
-            )
-        case _:
-            return None
+from schemas.schemas import CodingProblem, NodeStructure
+from utils.utils import get_node_structure
 
 
 def render_node_class(node: NodeStructure) -> str:

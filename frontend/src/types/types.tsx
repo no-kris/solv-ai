@@ -22,10 +22,33 @@ export interface ProblemExample {
 /**
  * Represents a test case for a coding problem
  */
-export interface TestCase {
-  params: Record<string, unknown>;
+export interface GenericTestCase {
+  params: Record<string, [unknown] | string | number>;
   expectedOutput: string | number | boolean | unknown;
 }
+
+export interface LinkedListTestCase {
+  head: Record<string, unknown> | null;
+  expectedOutput: string | number | boolean | unknown;
+}
+
+export interface TreeTestCase {
+  root: Record<string, unknown> | null;
+  expectedOutput: string | number | boolean | unknown;
+}
+
+export interface GraphTestCase {
+  edges: Record<string, number[]>;
+  start: string;
+  target: string;
+  expectedOutput: string | number | boolean | unknown;
+}
+
+export type TestCase =
+  | GenericTestCase
+  | LinkedListTestCase
+  | TreeTestCase
+  | GraphTestCase;
 
 /**
  * Represents a node data structure
