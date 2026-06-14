@@ -27,7 +27,10 @@ def solution(${params}):
 # ============================================`;
 };
 
-function CodingBlock({ problem }: ProblemProps): JSX.Element {
+function CodingBlock({
+  problem,
+  onValidateProblem,
+}: ProblemProps): JSX.Element {
   const [code, setCode] = useState<string>(() => {
     const signature = buildSignature(problem.paramNames);
     if (problem.nodeStructure) {
@@ -35,6 +38,10 @@ function CodingBlock({ problem }: ProblemProps): JSX.Element {
     }
     return signature;
   });
+
+  const handleValidateProblemClick = () => {
+    onValidateProblem(code, problem);
+  };
 
   return (
     <div className="coding-block">
@@ -46,7 +53,9 @@ function CodingBlock({ problem }: ProblemProps): JSX.Element {
         extensions={[python()]}
         className="code-editor"
       />
-      <button className="run-tests-btn">Run Tests</button>
+      <button className="run-tests-btn" onClick={handleValidateProblemClick}>
+        Run Tests
+      </button>
     </div>
   );
 }

@@ -11,6 +11,7 @@
   --color-bg-white: #fff;
   --color-border: #e5e7eb;
   --color-error: #c62828;
+  --color-success: #10b981;
   --color-overlay: rgba(0, 0, 0, 0.5);
   --color-shadow: rgba(0, 0, 0, 0.1);
   --color-shadow-dark: rgba(0, 0, 0, 0.2);
@@ -320,6 +321,23 @@ body {
 
 .run-tests-btn:active {
   scale: 0.98;
+}
+
+.validation-results {
+  font-size: var(--font-size-2xl);
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.validation-results-cases {
+  margin-left: var(--spacing-md);
+}
+
+.success-message {
+  font-weight: bold;
+  color: var(--color-success);
+  -webkit-text-stroke: var(--border-width-sm) var(--color-primary);
+  font-family: var(--font-family-display);
 }
 
 /* ===== Mobile / Responsive ===== */

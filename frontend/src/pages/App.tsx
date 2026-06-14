@@ -1,10 +1,12 @@
 import { useState } from "react";
-import type { FilterOption } from "../types/types";
+import type { CodingProblem, FilterOption } from "../types/types";
 import List from "../components/List";
 import ProblemBlock from "../components/ProblemBlock";
 import CodingBlock from "../components/CodingBlock";
 import { useProblem } from "../hooks/useProblem";
 import { handleGenerateProblem } from "../services/handleGenerateProblem";
+import { useValidation } from "../hooks/useValidation";
+import { handleValidateProblem } from "../services/handleValidateProblem";
 
 const problemCategories: FilterOption[] = [
   { id: 1, name: "Arrays", color: "#FF6B6B" },
@@ -25,6 +27,20 @@ function App() {
   const [problemDifficulty, setProblemDifficulty] = useState<string>("Easy");
   const { state: problemState, dispatch } = useProblem();
 
+  const { state: validationState, dispatch: validationDispatch } =
+    useValidation();
+
+  const handleValidateProblemHandler = async (
+    code: string,
+    problem: CodingProblem,
+  ) => {
+    handleValidateProblem({
+      code,
+      problem,
+      dispatch: validationDispatch,
+    });
+  };
+
   const handleGenerateProblemClick = () => {
     handleGenerateProblem({
       dispatch,
@@ -34,6 +50,7 @@ function App() {
       },
     });
   };
+
   const handleProblemCategoryChange = (category: string): void => {
     setProblemCategory(category);
   };
@@ -75,10 +92,27 @@ function App() {
       )}
 
       {problemState.content.isSet && (
-        <div className="problem-code-display">
-          <ProblemBlock problem={problemState.content} />
-          <CodingBlock problem={problemState.content} />
-        </div>
+        <>
+          {validationState.results && (
+            <div className="validation-results">
+              <p className="validation-results-cases">
+                Tests Passed: {validationState.results.passed} /
+                {validationState.results.total}
+              </p>
+              {validationState.results.passed ===
+                validationState.results.total && (
+                <p className="success-message">All tests passed!</p>
+              )}
+            </div>
+          )}
+          <div className="problem-code-display">
+            <ProblemBlock problem={problemState.content} />
+            <CodingBlock
+              problem={problemState.content}
+              onValidateProblem={handleValidateProblemHandler}
+            />
+          </div>
+        </>
       )}
     </div>
   );

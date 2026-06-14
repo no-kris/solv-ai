@@ -1,7 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from schemas.schemas import CodingProblem, GenerateProblemRequest
+from schemas.schemas import (
+    CodingProblem,
+    GenerateProblemRequest,
+    ValidateProblemRequest,
+)
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
 from utils.utils import structure_problem_data
@@ -22,6 +26,13 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"status": "Solv.AI API up and running."}
+
+
+@app.post("/api/validate-problem")
+async def api_validate_problem(
+    request: ValidateProblemRequest,
+):
+    return "reached"
 
 
 @app.post("/api/generate-problem", response_model=CodingProblem)

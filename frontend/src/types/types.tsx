@@ -1,5 +1,6 @@
 import type { Dispatch } from "react";
 import type { ProblemAction } from "../hooks/useProblem";
+import type { ValidationAction } from "../hooks/useValidation";
 
 /**
  * Represents a problem category or difficulty option
@@ -73,6 +74,7 @@ export interface CodingProblem {
  */
 export interface ProblemProps {
   problem: CodingProblem;
+  onValidateProblem?: (code: string, problem: CodingProblem) => Promise<void>;
 }
 
 /**
@@ -115,4 +117,10 @@ export type ProblemState = {
 export interface GenerateProblemProps {
   dispatch: Dispatch<ProblemAction>;
   problemMetadata: Record<string, string>;
+}
+
+export interface ValidateProblemProps {
+  code: string;
+  problem: CodingProblem;
+  dispatch: Dispatch<ValidationAction>;
 }

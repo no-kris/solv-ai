@@ -8,7 +8,7 @@ export const handleGenerateProblem = async ({
   dispatch({ type: "LOADING" });
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/generate-problem", {
+    const response = await fetch(import.meta.env.VITE_API_ROUTE_GENERATE, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

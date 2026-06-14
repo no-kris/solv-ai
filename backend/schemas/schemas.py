@@ -3,11 +3,6 @@ from typing import Annotated, Any, Literal, Optional
 from pydantic import BaseModel, Discriminator
 
 
-class GenerateProblemRequest(BaseModel):
-    category: str
-    difficulty: str
-
-
 class ProblemExample(BaseModel):
     input: str
     output: str
@@ -68,3 +63,13 @@ class CustomResponse(BaseModel):
     success: bool
     error: Optional[str] = None
     content: Optional[str] = None
+
+
+class GenerateProblemRequest(BaseModel):
+    category: str
+    difficulty: str
+
+
+class ValidateProblemRequest(BaseModel):
+    code: str
+    problem: CodingProblem
