@@ -9,6 +9,7 @@ from schemas.schemas import (
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
 from utils.utils import structure_problem_data
+from utils.validation import validate_parameters
 
 app = FastAPI(title="Solv.AI Backend API")
 
@@ -32,7 +33,14 @@ async def root():
 async def api_validate_problem(
     request: ValidateProblemRequest,
 ):
-    return "reached"
+    try:
+        is_valid = validate_parameters(request.code, request.param_names)
+        if is_valid.success is False:
+            raise HTTPException(status_code=400, detail=is_valid.error)
+        return {"passed": 0, "total": len(request.tests)}
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/api/generate-problem", response_model=CodingProblem)
@@ -60,4 +68,4 @@ async def api_generate_problem(
         return structured_problem_data
     except Exception as e:
         print(f"Error: {e}")
-        raise
+        raise HTTPException(status_code=400, detail=str(e))

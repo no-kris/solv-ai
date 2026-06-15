@@ -72,4 +72,10 @@ class GenerateProblemRequest(BaseModel):
 
 class ValidateProblemRequest(BaseModel):
     code: str
-    problem: CodingProblem
+    tests: list[
+        Annotated[
+            GenericTestCase | TreeTestCase | LinkedListTestCase | GraphTestCase,
+            Discriminator("type"),
+        ]
+    ]
+    param_names: list[str]

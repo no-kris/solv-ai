@@ -13,7 +13,8 @@ export const handleValidateProblem = async ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         code,
-        problem, // Send the entire problem with all test cases
+        tests: problem.tests,
+        paramNames: problem.paramNames,
       }),
     });
 
