@@ -1,10 +1,20 @@
 import type { ValidateProblemProps } from "../types/types";
 
+const MAX_CODE_LENGTH = 2000;
+
 export const handleValidateProblem = async ({
   code,
   problem,
   dispatch,
 }: ValidateProblemProps) => {
+  if (code.length > MAX_CODE_LENGTH) {
+    dispatch({
+      type: "ERROR",
+      payload: `Your code is too long (${code.length}/${MAX_CODE_LENGTH} characters). Please simplify it.`,
+    });
+    return;
+  }
+
   dispatch({ type: "RESET" });
   dispatch({ type: "LOADING" });
   try {
