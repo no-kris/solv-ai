@@ -9,7 +9,7 @@ from schemas.schemas import (
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
 from utils.utils import structure_problem_data
-from utils.validation import validate_parameters
+from utils.validation import has_dangerous_imports, validate_parameters
 
 app = FastAPI(title="Solv.AI Backend API")
 
@@ -35,7 +35,10 @@ async def api_validate_problem(
 ):
     try:
         is_valid = validate_parameters(request.code, request.param_names)
-        if is_valid.success is False:
+        if not is_valid.success:
+            raise HTTPException(status_code=400, detail=is_valid.error)
+        is_dangerous = has_dangerous_imports(request.code)
+        if is_dangerous.success:
             raise HTTPException(status_code=400, detail=is_valid.error)
         return {"passed": 0, "total": len(request.tests)}
     except Exception as e:
