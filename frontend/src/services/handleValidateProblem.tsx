@@ -24,25 +24,18 @@ export const handleValidateProblem = async ({
       body: JSON.stringify({
         code,
         tests: problem.tests,
-        paramNames: problem.paramNames,
+        param_names: problem.paramNames,
       }),
     });
 
     if (!response.ok) {
-      let errorMessage = "Oops. The LLM had a hiccup.";
+      let errorMessage = "Validation failed";
       try {
-        await response.json();
+        const errorData = await response.json();
+        errorMessage = errorData.detail || errorMessage;
       } catch {
-        if (response.status === 400) {
-          errorMessage +=
-            "Your code has syntax errors or can't be parsed. Check your Python!.";
-        } else if (response.status === 500) {
-          errorMessage =
-            "The validation server is having issues. Try again in a moment!";
-        } else if (response.status === 408) {
-          errorMessage =
-            "Validation took too long. Your code might be stuck in an infinite loop!";
-        }
+        // If response isn't valid JSON, use a generic message
+        errorMessage = `Validation failed (Status: ${response.status})`;
       }
       dispatch({ type: "ERROR", payload: errorMessage });
       return;

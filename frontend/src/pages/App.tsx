@@ -93,6 +93,11 @@ function App() {
 
       {problemState.content.isSet && (
         <>
+          {validationState.hasError && (
+            <div className="problem-error-message">
+              {String(validationState.errorMessage)}
+            </div>
+          )}
           {validationState.results && (
             <div className="validation-results">
               <p className="validation-results-cases">

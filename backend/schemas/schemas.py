@@ -65,6 +65,11 @@ class CustomResponse(BaseModel):
     content: Optional[str] = None
 
 
+class ValidationResponse(BaseModel):
+    passed: int
+    total: int
+
+
 class GenerateProblemRequest(BaseModel):
     category: str
     difficulty: str

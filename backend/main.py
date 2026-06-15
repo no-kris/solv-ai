@@ -5,6 +5,7 @@ from schemas.schemas import (
     CodingProblem,
     GenerateProblemRequest,
     ValidateProblemRequest,
+    ValidationResponse,
 )
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
@@ -33,14 +34,17 @@ async def root():
 async def api_validate_problem(
     request: ValidateProblemRequest,
 ):
+    print(f"Request received: {request}")
+    print(f"Code length: {len(request.code)}")
+    print(f"Problem: {request.tests}")
     try:
         is_valid = validate_parameters(request.code, request.param_names)
         if not is_valid.success:
             raise HTTPException(status_code=400, detail=is_valid.error)
         is_dangerous = has_dangerous_imports(request.code)
         if is_dangerous.success:
-            raise HTTPException(status_code=400, detail=is_valid.error)
-        return {"passed": 0, "total": len(request.tests)}
+            raise HTTPException(status_code=400, detail=is_dangerous.error)
+        return ValidationResponse(passed=0, total=len(request.tests))
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
