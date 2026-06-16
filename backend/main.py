@@ -3,10 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from schemas.schemas import (
     CodingProblem,
+    CustomResponse,
     GenerateProblemRequest,
     ValidateProblemRequest,
-    ValidationResponse,
 )
+from services.docker_executor import executor
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
 from utils.utils import structure_problem_data
@@ -41,10 +42,17 @@ async def api_validate_problem(
         is_valid = validate_parameters(request.code, request.param_names)
         if not is_valid.success:
             raise HTTPException(status_code=400, detail=is_valid.error)
+
         is_dangerous = has_dangerous_imports(request.code)
         if is_dangerous.success:
             raise HTTPException(status_code=400, detail=is_dangerous.error)
-        return ValidationResponse(passed=0, total=len(request.tests))
+
+        result = executor.execute(request.code, request.tests, request.param_names)
+
+        if isinstance(result, CustomResponse) and not result.success:
+            raise HTTPException(status_code=400, detail=result.error)
+
+        return result
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
