@@ -6,6 +6,7 @@ from schemas.schemas import (
     CustomResponse,
     GenerateProblemRequest,
     ValidateProblemRequest,
+    ValidationResponse,
 )
 from services.docker_executor import executor
 from services.llm_service import generate_problem
@@ -33,10 +34,8 @@ async def root():
 
 @app.post("/api/validate-problem")
 async def api_validate_problem(
-    request: ValidateProblemRequest,
+    request: ValidateProblemRequest, response_model=ValidationResponse
 ):
-    print(f"Request received: {request}")
-    print(f"Code length: {len(request.code)}")
     print(f"Problem: {request.tests}")
     try:
         is_valid = validate_parameters(request.code, request.param_names)

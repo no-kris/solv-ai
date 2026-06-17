@@ -2,6 +2,7 @@ import json
 import subprocess
 
 from docker.client import DockerClient
+from docker.errors import ImageNotFound
 
 import docker
 from schemas.schemas import (
@@ -22,11 +23,23 @@ class DockerExecutor:
         self.client: DockerClient = docker.DockerClient()
         self.image_name: str = image_name
 
+    def image_exists(self) -> bool:
+        """Check if image already exists."""
+        try:
+            self.client.images.get(self.image_name)
+            return True
+        except ImageNotFound:
+            return False
+
     def build_image(self):
-        """
-        Reads the dockerfile contained in the docker directory and builds the docker image.
-        """
-        self.client.images.build(path="./docker", tag=self.image_name)
+        """Build image only if it doesn't exist."""
+        if self.image_exists():
+            print(f"Image {self.image_name} already exists, skipping build")
+            return
+
+        self.client.images.build(
+            path=".", dockerfile="docker/dockerfile", tag=self.image_name
+        )
 
     def execute(
         self,
@@ -40,18 +53,22 @@ class DockerExecutor:
         try:
             result = self.client.containers.run(
                 self.image_name,
-                [json.dumps([t.model_dump() for t in tests]), json.dumps(param_names)],
-                input=code.encode(),
-                timeout=5,  # 5 second timeout
-                mem_limit="128m",  # Max 128MB
-                cpus=0.5,  # Max 50% CPU
-                remove=True,  # Auto-cleanup
+                command=[
+                    "python",
+                    "execute.py",
+                    json.dumps([t.model_dump() for t in tests]),
+                    json.dumps(param_names),
+                    code,
+                ],
+                mem_limit="128m",
+                cpu_quota=50000,
+                cpu_period=100000,
+                remove=True,
             )
-
-            test_results = json.loads(result)
-            return ValidationResponse(
-                passed=test_results["passed"], total=test_results["total"]
-            )
+            output = json.loads(result)
+            if not output.get("success", False):
+                return output
+            return ValidationResponse(passed=output["passed"], total=len(tests))
         except subprocess.TimeoutExpired:
             return CustomResponse(
                 success=False, error="Code execution timed out (infinite loop?)"
@@ -61,3 +78,4 @@ class DockerExecutor:
 
 
 executor = DockerExecutor()
+executor.build_image()

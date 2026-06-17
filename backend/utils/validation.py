@@ -54,9 +54,7 @@ def validate_parameters(code: str, expected_params: list[str]) -> CustomResponse
     result = extract_function_signature(code)
 
     if result is None:
-        return CustomResponse(
-            success=False, error="Could not find 'solution' function in your code."
-        )
+        return CustomResponse(success=False, error="You're code has errors.")
 
     _, actual_params = result
 

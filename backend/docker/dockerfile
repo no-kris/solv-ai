@@ -2,6 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY execute.py /app/execute.py
+RUN pip install pydantic
 
-ENTRYPOINT ["python", "execute.py"]
+COPY schemas/ /app/schemas/
+COPY utils/execute.py /app/execute.py
