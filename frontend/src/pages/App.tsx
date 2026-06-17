@@ -42,6 +42,7 @@ function App() {
   };
 
   const handleGenerateProblemClick = () => {
+    validationDispatch({ type: "RESET" });
     handleGenerateProblem({
       dispatch,
       problemMetadata: {

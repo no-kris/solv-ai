@@ -8,7 +8,7 @@ const buildNodeStructure = (node: NodeStructure): string => {
   const params = node.fields.map((f) => `${f.name}=${f.default}`).join(", ");
 
   const body = node.fields
-    .map((f) => `\tself.${f.name} = ${f.name}`)
+    .map((f) => `    self.${f.name} = ${f.name}`)
     .join("\n");
 
   return `class ${node.className}:

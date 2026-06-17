@@ -24,7 +24,7 @@ export interface ProblemExample {
  * Represents a test case for a coding problem
  */
 export interface GenericTestCase {
-  params: Record<string, [unknown] | string | number>;
+  params: Record<string, unknown | string | number>;
   expectedOutput: string | number | boolean | unknown;
 }
 

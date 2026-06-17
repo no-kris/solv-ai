@@ -6,8 +6,8 @@ from utils.utils import get_node_structure
 
 def render_node_class(node: NodeStructure) -> str:
     params = ", ".join(f"{f.name}={f.default}" for f in node.fields)
-    body = "\n".join(f"\tself.{f.name} = {f.name}" for f in node.fields)
-    return f"class {node.className}:\n\tdef __init__(self, {params}):\n{body}"
+    body = "\n".join(f"    self.{f.name} = {f.name}" for f in node.fields)
+    return f"class {node.className}:\n  def __init__(self, {params}):\n{body}"
 
 
 def build_prompt(category: str, difficulty: str) -> str:

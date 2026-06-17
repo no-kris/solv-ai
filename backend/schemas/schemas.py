@@ -21,7 +21,7 @@ class NodeStructure(BaseModel):
 
 class GenericTestCase(BaseModel):
     type: Literal["generic"]
-    params: dict[str, list[Any]]
+    params: dict[str, Any]
     expectedOutput: Any
 
 
