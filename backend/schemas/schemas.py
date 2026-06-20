@@ -1,6 +1,6 @@
 from typing import Annotated, Any, Literal, Optional
 
-from pydantic import BaseModel, Discriminator
+from pydantic import BaseModel, ConfigDict, Discriminator
 
 
 class ProblemExample(BaseModel):
@@ -19,6 +19,24 @@ class NodeStructure(BaseModel):
     fields: list[NodeField]
 
 
+class ListNode(BaseModel):
+    val: int
+    next: Optional["ListNode"] = None
+
+
+class TreeNode(BaseModel):
+    val: int
+    left: Optional["TreeNode"] = None
+    right: Optional["TreeNode"] = None
+
+
+class GraphNode(BaseModel):
+    val: int
+    neighbors: list["GraphNode"] = []
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+
 class GenericTestCase(BaseModel):
     type: Literal["generic"]
     params: dict[str, Any]
@@ -27,21 +45,24 @@ class GenericTestCase(BaseModel):
 
 class TreeTestCase(BaseModel):
     type: Literal["tree"]
-    root: Optional[dict[str, Any]] = None
-    expectedOutput: Any
+    root: Optional[TreeNode] = None
+    params: dict[str, Any] = {}
+    expectedOutput: Optional[TreeNode] = None
 
 
 class LinkedListTestCase(BaseModel):
     type: Literal["linked_list"]
-    head: Optional[dict[str, Any]] = None
-    expectedOutput: Any
+    head: Optional[ListNode] = None
+    params: dict[str, Any] = {}
+    expectedOutput: Optional[ListNode] = None
 
 
 class GraphTestCase(BaseModel):
     type: Literal["graph"]
-    start: str
-    target: str
-    edges: dict[str, list[Any]]
+    edges: dict[int, list[int]]
+    start: Optional[GraphNode] = None
+    target: Optional[GraphNode] = None
+    params: dict[str, Any] = {}
     expectedOutput: Any
 
 
@@ -84,3 +105,9 @@ class ValidateProblemRequest(BaseModel):
         ]
     ]
     param_names: list[str]
+
+
+# Update forward references
+ListNode.model_rebuild()
+TreeNode.model_rebuild()
+GraphNode.model_rebuild()
