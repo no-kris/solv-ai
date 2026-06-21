@@ -40,7 +40,7 @@ function CodingBlock({
   });
 
   const handleValidateProblemClick = () => {
-    onValidateProblem(code, problem);
+    onValidateProblem?.(code, problem);
   };
 
   return (
