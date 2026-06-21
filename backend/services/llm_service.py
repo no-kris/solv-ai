@@ -2,8 +2,9 @@ import asyncio
 import json
 import random
 
-from prompts.build_prompt import build_prompt
 from pydantic import ValidationError
+
+from prompts.build_prompt import build_prompt
 from schemas.schemas import CustomResponse
 from utils.config import config
 from utils.utils import strip_llm_markdown_formatting
