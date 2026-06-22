@@ -4,6 +4,7 @@ emoji: 🌖
 colorFrom: gray
 colorTo: red
 sdk: docker
+dockerfile: backend/Dockerfile
 pinned: false
 license: mit
 ---

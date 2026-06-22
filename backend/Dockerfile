@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip install uv
 
-COPY . .
+COPY backend/ .
 
 RUN uv sync
 
