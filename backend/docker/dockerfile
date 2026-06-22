@@ -1,8 +1,0 @@
-FROM python:3.11-slim
-
-WORKDIR /app
-
-RUN pip install pydantic
-
-COPY schemas/ /app/schemas/
-COPY utils/execute.py /app/execute.py

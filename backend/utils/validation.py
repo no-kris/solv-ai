@@ -3,27 +3,74 @@ from typing import Optional
 
 from schemas.schemas import CustomResponse
 
+BLOCKED_IMPORTS = {
+    "os",
+    "subprocess",
+    "sys",
+    "socket",
+    "requests",
+    "pathlib",
+    "shutil",
+    "ctypes",
+    "builtins",
+    "importlib",
+    "inspect",
+    "ast",
+    "pickle",
+    "marshal",
+    "shelve",
+    "sqlite3",
+    "multiprocessing",
+    "threading",
+    "signal",
+    "mmap",
+    "resource",
+}
+
+BLOCKED_BUILTINS = {
+    "open",
+    "exec",
+    "eval",
+    "compile",
+    "__import__",
+    "breakpoint",
+    "input",
+}
+
 
 def has_dangerous_imports(code: str) -> CustomResponse:
     """
-    Check for dangerous imports. (i.e any imports that attempt to access the os or network)
+    Check for dangerous imports and function calls. (i.e any imports/functions that attempt to access the os, files, or network.)
     """
-    dangerous = {"os", "subprocess", "sys", "socket", "requests", "__import__"}
 
     try:
         tree = ast.parse(code)
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
-                    if alias.name in dangerous:
+                    if alias.name in BLOCKED_IMPORTS:
                         return CustomResponse(
                             success=True, error=f"Import '{alias.name}' is not allowed."
                         )
             elif isinstance(node, ast.ImportFrom):
-                if node.module in dangerous:
+                if node.module in BLOCKED_IMPORTS:
                     return CustomResponse(
                         success=True,
                         error=f"Import from '{node.module}' is not allowed.",
+                    )
+            elif isinstance(node, ast.Call):
+                if isinstance(node.func, ast.Name) and node.func.id in BLOCKED_BUILTINS:
+                    return CustomResponse(
+                        success=True,
+                        error=f"Calling '{node.func.id}' is not allowed.",
+                    )
+                if (
+                    isinstance(node.func, ast.Attribute)
+                    and node.func.attr in BLOCKED_BUILTINS
+                ):
+                    return CustomResponse(
+                        success=True,
+                        error=f"Calling '{node.func.attr}' is not allowed.",
                     )
         return CustomResponse(success=False)
     except SyntaxError:
