@@ -1,3 +1,5 @@
+import traceback
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,6 +12,7 @@ from schemas.schemas import (
 )
 from services.llm_service import generate_problem
 from utils.config import get_allowed_origins
+from utils.execute import execute_code
 from utils.utils import structure_problem_data
 from utils.validation import has_dangerous_imports, validate_parameters
 
@@ -35,7 +38,7 @@ async def root():
 async def api_validate_problem(
     request: ValidateProblemRequest, response_model=ValidationResponse
 ):
-    print(f"Problem: {request.tests}")
+    # print(f"Problem: {request.tests}")
     try:
         is_valid = validate_parameters(request.code, request.param_names)
         if not is_valid.success:
@@ -45,12 +48,12 @@ async def api_validate_problem(
         if is_dangerous.success:
             raise HTTPException(status_code=400, detail=is_dangerous.error)
 
-        # result = executor.execute(request.code, request.tests, request.param_names)
+        result = execute_code(request.code, request.tests, request.param_names)
 
-        # if isinstance(result, CustomResponse) and not result.success:
-        #     raise HTTPException(status_code=400, detail=result.error)
+        if isinstance(result, CustomResponse) and not result.success:
+            raise HTTPException(status_code=400, detail=result.error)
 
-        # return result
+        return result
     except Exception as e:
         print(f"Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
@@ -79,6 +82,6 @@ async def api_generate_problem(
             )
 
         return structured_problem_data
-    except Exception as e:
-        print(f"Error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+    except Exception:
+        print(f"Error: {traceback.format_exc()}")
+        raise HTTPException(status_code=400, detail="An unexpected error occurred.")

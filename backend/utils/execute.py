@@ -1,18 +1,79 @@
 import json
+import os
+import subprocess
 import sys
+from pathlib import Path
 from typing import Annotated
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+
 from schemas.schemas import (
+    CustomResponse,
     GenericTestCase,
     GraphTestCase,
     LinkedListTestCase,
     TreeTestCase,
+    ValidationResponse,
 )
 
 TestCase = Annotated[
     GenericTestCase | TreeTestCase | LinkedListTestCase | GraphTestCase,
     "TestCase",
 ]
+
+
+_env = os.environ.copy()
+for key in ("HF_TOKEN", "MODEL", "ALLOWED_ORIGINS"):
+    _env.pop(key, None)
+
+
+def execute_code(
+    code: str, tests: list[TestCase], param_names: list[str]
+) -> ValidationResponse | CustomResponse:
+    """
+    Run a subprocess on the users code.
+    """
+    try:
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(__file__),
+                json.dumps([t.model_dump() for t in tests]),  # argv[1]
+                json.dumps(param_names),  # argv[2]
+                code,
+            ],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            env=_env,
+        )
+    except subprocess.TimeoutExpired:
+        return CustomResponse(
+            success=False, error="Code execution timed out (infinite loop?)"
+        )
+    except Exception as e:
+        return CustomResponse(success=False, error=f"Execution error: {str(e)}")
+
+    if result.returncode != 0:
+        stderr = result.stderr.strip()
+        return CustomResponse(
+            success=False,
+            error=stderr or f"Process exited with code {result.returncode}",
+        )
+
+    try:
+        output = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return CustomResponse(
+            success=False,
+            error="Failed to parse execution output",
+        )
+
+    if not output.get("success", False):
+        return CustomResponse(success=False, error=output.get("error", "Unknown error"))
+
+    return ValidationResponse(passed=output["passed"], total=len(tests))
 
 
 def execute_user_code(
