@@ -40,7 +40,8 @@
   --font-family-base:
     Corbel, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
   --font-family-mono: "Courier New", monospace;
-  --font-family-display: "Playfair Display", Georgia, serif;
+  --font-family-display:
+    "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive;
 
   --font-size-xs: 1.1rem;
   --font-size-sm: 1.2rem;
