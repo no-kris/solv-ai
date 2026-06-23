@@ -418,7 +418,10 @@ body {
   }
 
   .code-editor {
-    font-size: var(--font-size-xl);
+    font-size: 1.6rem;
+    transform: scale(0.875);
+    transform-origin: top left;
+    width: 114%;
   }
 
   .list,
