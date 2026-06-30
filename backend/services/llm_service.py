@@ -31,10 +31,10 @@ async def generate_problem(
             await asyncio.sleep(delay)
         try:
             prompt = build_prompt(category, difficulty)
-            response = await config.get_client().chat.completion.create(
+            response = await config.get_client().chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
                 model=config.get_model(),
-                temperature=0.7,
+                temperature=0.9,
             )
             content_str = str(response.choices[0].message.content)
             cleaned_content_str = strip_llm_markdown_formatting(content_str)
