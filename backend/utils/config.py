@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 
 from dotenv import load_dotenv
-from huggingface_hub import AsyncInferenceClient
+from openai import AsyncOpenAI
 
 load_dotenv(override=True)
 
@@ -32,15 +32,17 @@ def get_env(key: str) -> str:
 
 @dataclass
 class Config:
-    __HF_TOKEN: str = get_env("HF_TOKEN")
-    __MODEL: str = get_env("MODEL")
-    __CLIENT = AsyncInferenceClient(token=__HF_TOKEN)
+    __GROQ_API_KEY: str = get_env("GROQ_API_KEY")
+    __GROQ_MODEL: str = get_env("GROQ_MODEL")
+    __CLIENT = AsyncOpenAI(
+        api_key=__GROQ_API_KEY, base_url="https://api.groq.com/openai/v1"
+    )
 
-    def get_client(self) -> AsyncInferenceClient:
+    def get_client(self):
         return self.__CLIENT
 
     def get_model(self) -> str:
-        return self.__MODEL
+        return self.__GROQ_MODEL
 
     def __repr__(self) -> str:
         """
